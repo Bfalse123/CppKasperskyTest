@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <string>
+#include <mutex>
 
 namespace Server {
 class Server {
@@ -9,5 +10,6 @@ class Server {
     ~Server();
    private:
     int32_t socket;
+    std::mutex m;
 };
 }  // namespace Server

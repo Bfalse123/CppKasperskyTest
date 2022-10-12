@@ -20,36 +20,31 @@ int32_t sock(uint32_t port, int32_t qlen) {
     struct protoent *ppe;
     struct sockaddr_in sin;
     int type = SOCK_STREAM;
-    //обнуляем структуру адреса
     memset(&sin, 0, sizeof(sin));
     //указываем тип адреса - IPv4
     sin.sin_family = AF_INET;
     //указываем, в качестве адреса, шаблон INADDR_ANY - все сетевые интерфейсы
     sin.sin_addr.s_addr = INADDR_ANY;
-    //задаем порт
     sin.sin_port = htons((unsigned short)port);
     //преобразовываем имя транспортного протокола в номер протокола
     if ((ppe = getprotobyname("tcp")) == 0) {
         std::cerr << "Eroor: Can't determine a transport protocol\n";
         return -1;
     }
-    //создаем сокет
     int s = socket(PF_INET, type, ppe->p_proto);
     if (s < 0) {
         std::cerr << "Error: Can't create the socket\n";
         return -1;
     }
-    //привязка сокета с проверкой результата
     if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-        std::cerr << "Error: Can't bend the socket\n";
+        std::cerr << "Error: Can't bind the socket\n";
         return -1;
     }
-    //запуск прослушивания с проверкой результата
     if (type == SOCK_STREAM && listen(s, qlen) < 0) {
         std::cerr << "Error: Can't listen to the socket\n";
         return -1;
     }
-    return s;  //возвращаем дескриптор сокета
+    return s;
 }
 
 Server::Server(uint32_t port, int32_t qlen) : socket(sock(port, qlen)) {
@@ -71,6 +66,7 @@ void Server::Listen() {
         if (csock < 0) {                                                    //проверяем результат
             std::cerr << "Error: Can't accept client connection";
         } else {
+            std::lock_guard<std::mutex> lock(m);
             memset(&msg, 0, sizeof(msg));
             if (read(csock, &msg, sizeof(msg)) > 0) {
                 std::cout << "Directory: " << msg << "\n";
