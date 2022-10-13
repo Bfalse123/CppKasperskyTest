@@ -2,7 +2,7 @@
 #include <iostream>
 
 const uint32_t SERVER_PORT = 1231;
-const std::string SERVER_IP = "172.16.63.200";
+const std::string SERVER_IP = "127.0.0.1"; // localhost
 
 int main(int argc, char *argv[]) {
     if (argc > 1) {
