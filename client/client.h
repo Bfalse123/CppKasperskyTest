@@ -6,6 +6,7 @@ class Client {
    public:
     Client(const std::string& host, uint32_t port);
     void Send(const std::string& data) const;
+    std::string Read() const;
     ~Client();
 
    private:

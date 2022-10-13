@@ -60,14 +60,15 @@ Client::~Client() {
 void Client::Send(const std::string &data) const {
     if (socket >= 0 && (write(socket, data.c_str(), data.size()) < 0)) {
         std::cerr << "Can't sent data to the server\n";
-        return;
     }
+}
+
+std::string Client::Read() const {
     char msg[1'000'000];
     if (socket >= 0 && (read(socket, msg, sizeof(msg)) < 0)) {
         std::cerr << "Can't receive data from the server\n";
-        return;
-    } else {
-        std::cout << msg;
+        return "";
     }
+    return msg;
 }
 }  // namespace Client

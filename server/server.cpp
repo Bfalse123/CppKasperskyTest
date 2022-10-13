@@ -77,6 +77,9 @@ void Server::Listen() {
                     std::cerr << "Can't send data to client\n";
                 }
             }
+            else {
+                std::cerr << "Can't read data\n";
+            }
             close(csock);  //закрываем сокет клиента
         }
     }
